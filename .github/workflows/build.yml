@@ -22,13 +22,21 @@ env:
 jobs:
   get-caddy-version:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       version: ${{ steps.version.outputs.latest }}
     steps:
       - name: Get latest Caddy version
         id: version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION=$(curl -s https://api.github.com/repos/caddyserver/caddy/releases/latest | jq -r '.tag_name' | sed 's/^v//')
+          VERSION=$(curl -s -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/repos/caddyserver/caddy/releases/latest | jq -r '.tag_name' | sed 's/^v//')
+          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
+            echo "Failed to fetch Caddy version" >&2
+            exit 1
+          fi
           echo "latest=$VERSION" >> $GITHUB_OUTPUT
           echo "Latest Caddy version: $VERSION"
 

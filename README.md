@@ -137,6 +137,46 @@ docker run -d \
   ghcr.io/webzaytsev/caddy-selectel-docker:latest
 ```
 
+### Конфигурация для Cloudflare DNS
+
+#### Caddyfile конфигурация
+
+**Глобальная настройка:**
+
+```caddyfile
+{
+	acme_dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+}
+
+example.com {
+	reverse_proxy backend:8080
+}
+
+*.example.com {
+	reverse_proxy backend:8080
+}
+```
+
+**Настройка для одного сайта:**
+
+```caddyfile
+example.com {
+	tls {
+		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+	}
+
+	reverse_proxy backend:8080
+}
+```
+
+#### Переменные окружения
+
+```bash
+CLOUDFLARE_API_TOKEN=your_cloudflare_api_token
+```
+
+> Токен создаётся в [Cloudflare Dashboard](https://dash.cloudflare.com/profile/api-tokens) с правом `Zone / DNS / Edit` для нужных зон.
+
 ### Docker Compose
 
 Пример `docker-compose.yml`:
@@ -280,6 +320,51 @@ api.example.com {
 	reverse_proxy api:3000
 }
 ```
+
+### Использование с Cloudflare DNS
+
+```caddyfile
+{
+	acme_dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+}
+
+example.com {
+	reverse_proxy backend:8080
+}
+
+*.example.com {
+	reverse_proxy backend:8080
+}
+```
+
+### Использование Cloudflare с Dynamic DNS
+
+```caddyfile
+{
+	dynamic_dns {
+		provider cloudflare {env.CLOUDFLARE_API_TOKEN}
+		domains {
+			home.example.com
+		}
+		ip_source public
+		check_interval 10m
+	}
+
+	acme_dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+}
+
+home.example.com {
+	reverse_proxy localhost:8080
+}
+
+api.example.com {
+	reverse_proxy api:3000
+}
+```
+
+В этом примере:
+- `home.example.com` автоматически обновляет A-запись при смене IP
+- Оба домена получают SSL через Cloudflare DNS challenge
 
 ### Использование Dynamic DNS с Selectel
 

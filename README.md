@@ -1,12 +1,13 @@
-# Caddy with Selectel DNS Plugin
+# caddy-dns-pro
 
-Docker образ Caddy с предустановленными DNS плагинами для автоматического управления DNS-записями через Selectel DNS API v2, Cloudflare и Dynamic DNS.
+Docker образ Caddy с предустановленными DNS плагинами для автоматического управления DNS-записями через Selectel, Timeweb, Cloudflare и Dynamic DNS.
 
 ## Обзор
 
 Этот проект предоставляет готовый Docker образ [Caddy](https://caddyserver.com/) с включенными модулями:
 
 - **caddy-selectel** - модуль для работы с Selectel DNS API v2
+- **caddy-dns/timeweb** - модуль для Timeweb DNS
 - **caddy-dns/cloudflare** - модуль для Cloudflare DNS
 - **caddy-dynamicdns** - модуль для динамического обновления DNS-записей
 
@@ -30,12 +31,12 @@ Docker образ Caddy с предустановленными DNS плагин
 
 **GitHub Container Registry:**
 ```bash
-docker pull ghcr.io/webzaytsev/caddy-selectel-docker:latest
+docker pull ghcr.io/webzaytsev/caddy-dns-pro:latest
 ```
 
 **Docker Hub:**
 ```bash
-docker pull webzaytsev/caddy-selectel-docker:latest
+docker pull webzaytsev/caddy-dns-pro:latest
 ```
 
 ### Запуск контейнера
@@ -49,7 +50,7 @@ docker run -d \
   -v $(pwd)/Caddyfile:/etc/caddy/Caddyfile \
   -v caddy_data:/data \
   -v caddy_config:/config \
-  ghcr.io/webzaytsev/caddy-selectel-docker:latest
+  ghcr.io/webzaytsev/caddy-dns-pro:latest
 ```
 
 ### Конфигурация для Selectel DNS
@@ -134,7 +135,7 @@ docker run -d \
   -v $(pwd)/Caddyfile:/etc/caddy/Caddyfile \
   -v caddy_data:/data \
   -v caddy_config:/config \
-  ghcr.io/webzaytsev/caddy-selectel-docker:latest
+  ghcr.io/webzaytsev/caddy-dns-pro:latest
 ```
 
 ### Конфигурация для Cloudflare DNS
@@ -177,6 +178,26 @@ CLOUDFLARE_API_TOKEN=your_cloudflare_api_token
 
 > Токен создаётся в [Cloudflare Dashboard](https://dash.cloudflare.com/profile/api-tokens) с правом `Zone / DNS / Edit` для нужных зон.
 
+### Конфигурация для Timeweb DNS
+
+#### Caddyfile конфигурация
+
+```caddyfile
+{
+	acme_dns timeweb {env.TIMEWEB_API_TOKEN}
+}
+
+example.com {
+	reverse_proxy backend:8080
+}
+```
+
+#### Переменные окружения
+
+```bash
+TIMEWEB_API_TOKEN=your_timeweb_api_token
+```
+
 ### Docker Compose
 
 Пример `docker-compose.yml`:
@@ -186,7 +207,7 @@ version: '3.8'
 
 services:
   caddy:
-    image: ghcr.io/webzaytsev/caddy-selectel-docker:latest
+    image: ghcr.io/webzaytsev/caddy-dns-pro:latest
     container_name: caddy
     restart: unless-stopped
     ports:
@@ -241,8 +262,8 @@ docker build -t caddy-selectel:latest .
 **Публикация образов:**
 
 Образы автоматически публикуются в:
-- **GitHub Container Registry** (`ghcr.io/webzaytsev/caddy-selectel-docker`)
-- **Docker Hub** (`webzaytsev/caddy-selectel-docker`)
+- **GitHub Container Registry** (`ghcr.io/webzaytsev/caddy-dns-pro`)
+- **Docker Hub** (`webzaytsev/caddy-dns-pro`)
 
 Для публикации на Docker Hub требуется настроить секрет `DOCKERHUB_TOKEN` в настройках репозитория GitHub (Settings → Secrets and variables → Actions).
 
@@ -274,6 +295,10 @@ docker build -t caddy-selectel:latest .
 - Selectel (через caddy-selectel)
 - Cloudflare
 - И другие провайдеры, поддерживающие libdns
+
+### dns.providers.timeweb
+
+Модуль для управления DNS-записями через Timeweb DNS API. Подробнее: [caddy-dns/timeweb](https://github.com/caddy-dns/timeweb)
 
 ### Другие модули
 
@@ -472,6 +497,7 @@ api.example.com {
 Этот проект использует следующие модули:
 
 - [caddy-selectel](https://github.com/WEBzaytsev/caddy-selectel) - модуль Selectel DNS для Caddy
+- [caddy-dns/timeweb](https://github.com/caddy-dns/timeweb) - модуль Timeweb DNS для Caddy
 - [caddy-dns/cloudflare](https://github.com/caddy-dns/cloudflare) - модуль Cloudflare DNS
 - [caddy-dynamicdns](https://github.com/mholt/caddy-dynamicdns) - модуль динамического DNS
 
@@ -482,4 +508,5 @@ api.example.com {
 - [Selectel Service User управление](https://my.selectel.ru/iam/users_management/users?type=service)
 - [caddy-selectel GitHub](https://github.com/WEBzaytsev/caddy-selectel)
 - [selectel-libdns GitHub](https://github.com/WEBzaytsev/selectel-libdns)
+- [caddy-dns/timeweb GitHub](https://github.com/caddy-dns/timeweb)
 

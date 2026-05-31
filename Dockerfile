@@ -5,7 +5,7 @@ RUN xcaddy build \
 	--with github.com/mholt/caddy-ratelimit \
 	--with github.com/WeidiDeng/caddy-cloudflare-ip \
 	--with github.com/mholt/caddy-dynamicdns \
-	--with github.com/WEBzaytsev/caddy-selectel@v1.4.0 \
+	--with ithub.com/caddy-dns/selectel \
 	--with github.com/caddy-dns/timeweb
 
 FROM caddy:2.11.3

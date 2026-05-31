@@ -6,13 +6,14 @@ Docker образ [Caddy](https://caddyserver.com/) с DNS-плагинами д
 
 ## Модули
 
-| Модуль | Провайдер | Источник |
-|--------|-----------|----------|
-| `dns.providers.selectel` | Selectel DNS API v2 | [caddy-selectel](https://github.com/WEBzaytsev/caddy-selectel) |
+| Модуль | Описание | Источник |
+|--------|----------|----------|
+| `dns.providers.selectel` | Selectel DNS API v2 | [caddy-dns/selectel](https://github.com/caddy-dns/selectel) |
 | `dns.providers.timeweb` | Timeweb DNS | [caddy-dns/timeweb](https://github.com/caddy-dns/timeweb) |
 | `dns.providers.cloudflare` | Cloudflare DNS | [caddy-dns/cloudflare](https://github.com/caddy-dns/cloudflare) |
 | `dynamic_dns` | Авто-обновление A-записей | [caddy-dynamicdns](https://github.com/mholt/caddy-dynamicdns) |
 | `http.handlers.rate_limit` | Rate limiting | [caddy-ratelimit](https://github.com/mholt/caddy-ratelimit) |
+| `http.handlers.cloudflare_ip` | Реальный IP клиента за Cloudflare proxy | [caddy-cloudflare-ip](https://github.com/WeidiDeng/caddy-cloudflare-ip) |
 
 ## Быстрый старт
 
@@ -120,6 +121,23 @@ example.com, *.example.com {
 }
 ```
 
+## Cloudflare Real IP
+
+Модуль `http.handlers.cloudflare_ip` восстанавливает реальный IP-адрес клиента из заголовка `CF-Connecting-IP`, подставляемого Cloudflare. Без него Caddy видит IP прокси-сервера Cloudflare, а не пользователя.
+
+```caddyfile
+{
+	order cloudflare_ip first
+}
+
+example.com {
+	cloudflare_ip
+	reverse_proxy backend:8080
+}
+```
+
+> Достаточно добавить директиву `cloudflare_ip` в блок сайта — модуль автоматически загрузит диапазоны IP Cloudflare и проверит, что запрос пришёл именно от их сети.
+
 ## Dynamic DNS
 
 Модуль `dynamic_dns` автоматически создаёт и обновляет A-записи при изменении IP сервера. Полезно для серверов с динамическим IP.
@@ -175,8 +193,9 @@ docker build -t caddy-dns-pro:latest .
 ## Ссылки
 
 - [Caddy документация](https://caddyserver.com/docs/)
-- [caddy-selectel](https://github.com/WEBzaytsev/caddy-selectel)
+- [caddy-dns/selectel](https://github.com/caddy-dns/selectel)
 - [caddy-dns/timeweb](https://github.com/caddy-dns/timeweb)
 - [caddy-dns/cloudflare](https://github.com/caddy-dns/cloudflare)
 - [caddy-dynamicdns](https://github.com/mholt/caddy-dynamicdns)
+- [caddy-cloudflare-ip](https://github.com/WeidiDeng/caddy-cloudflare-ip)
 - [Selectel DNS API v2](https://developers.selectel.ru/docs/cloud-services/dns_api/dns_api_actual/)

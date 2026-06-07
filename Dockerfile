@@ -1,4 +1,4 @@
-FROM caddy:2.11.3-builder-alpine AS builder
+FROM caddy:2.11.4-builder-alpine AS builder
 
 RUN xcaddy build \
 	--with github.com/caddy-dns/cloudflare \
@@ -8,7 +8,7 @@ RUN xcaddy build \
 	--with github.com/caddy-dns/selectel \
 	--with github.com/caddy-dns/timeweb
 
-FROM caddy:2.11.3
+FROM caddy:2.11.4
 
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
 

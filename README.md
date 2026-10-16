@@ -12,6 +12,7 @@ Docker образ [Caddy](https://caddyserver.com/) с DNS-плагинами д
 | `dns.providers.timeweb` | Timeweb DNS | [caddy-dns/timeweb](https://github.com/caddy-dns/timeweb) |
 | `dns.providers.cloudflare` | Cloudflare DNS | [caddy-dns/cloudflare](https://github.com/caddy-dns/cloudflare) |
 | `dynamic_dns` | Авто-обновление A-записей | [caddy-dynamicdns](https://github.com/mholt/caddy-dynamicdns) |
+| `layer4` | Проксирование TCP/UDP на уровне L4 | [caddy-l4](https://github.com/mholt/caddy-l4) |
 | `http.handlers.rate_limit` | Rate limiting | [caddy-ratelimit](https://github.com/mholt/caddy-ratelimit) |
 | `http.handlers.cloudflare_ip` | Реальный IP клиента за Cloudflare proxy | [caddy-cloudflare-ip](https://github.com/WeidiDeng/caddy-cloudflare-ip) |
 
@@ -199,5 +200,6 @@ docker build -t caddy-dns-pro:latest .
 - [caddy-dns/timeweb](https://github.com/caddy-dns/timeweb)
 - [caddy-dns/cloudflare](https://github.com/caddy-dns/cloudflare)
 - [caddy-dynamicdns](https://github.com/mholt/caddy-dynamicdns)
+- [caddy-l4](https://github.com/mholt/caddy-l4)
 - [caddy-cloudflare-ip](https://github.com/WeidiDeng/caddy-cloudflare-ip)
 - [Selectel DNS API v2](https://developers.selectel.ru/docs/cloud-services/dns_api/dns_api_actual/)
